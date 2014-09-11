@@ -55,10 +55,6 @@ for item in dirs:
 				mt = f.sendcmd('MDTM '+ fi)
 				#converting to timestamp
 				nt = datetime.strptime(mt[4:], "%Y%m%d%H%M%S").strftime("%s")
-				#print "mtime FTP :" + str(int(mt[4:]))
-				#print "FTP M timestamp   : " + str(nt)
-				#print "Local M timestamp : " + str(os.stat(local_file).st_mtime)
-				#print "Local A timestamp : " + str(os.stat(local_file).st_atime)
 
 				if int(nt)==int(os.stat(local_file).st_mtime):
 					print fi +" not modified. Download skipped"
