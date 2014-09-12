@@ -32,14 +32,13 @@ print "Connected and Dir list retrieved."
 
 print "Searching for :"+ target_bug
 ct=0;
-file_type = '*.ffn'
 for item in dirs:
 	if item.find(target_bug)>-1:
 		print item
 		#create the dir
 		if not os.path.isdir(os.path.join(target_dir,item)):
 			print "Dir not found. Creating it..."
-			os.makedirs(os.path.join(Target_dir,item))
+			os.makedirs(os.path.join(target_dir,item))
 		#Get the gbk 
 		#1) change the dir
 		f.cwd(item)
