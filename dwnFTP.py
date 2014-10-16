@@ -35,7 +35,9 @@ print "Searching for :"+ target_bug
 ct=0;
 for item in dirs:
 	if item.find(target_bug)>-1:
-		print item
+		print
+		print "----------------------------------------------"
+		print "Dir: " + item
 		#create the dir
 		if not os.path.isdir(os.path.join(target_dir,item)):
 			print "Dir not found. Creating it..."
@@ -43,13 +45,12 @@ for item in dirs:
 		#1) change the dir
 		f.cwd(item)
 		#2) get  files from file_type in dir
-		files=f.nlst(file_type)
-		if len(files)>0:
+		try:
+			files=f.nlst(file_type)
 			for fi in files:
-				print "----------------------------------------------"
 				local_file = os.path.join(target_dir,item,fi)
 				if os.path.isfile(local_file):
-					print "################"
+					print "Dir:" + item	
 					print "File " + local_file + " already exists."
 					#get remote modification time			
 					mt = f.sendcmd('MDTM '+ fi)
@@ -64,20 +65,17 @@ for item in dirs:
 						DownloadAndSetTimestamp(local_file,fi,nt)
 						print "NV Local M timestamp : " + str(os.stat(local_file).st_mtime)
 						print "NV Local A timestamp : " + str(os.stat(local_file).st_atime)
-					print "################"
 
 				else:
-					print "################"
 					print "New file: "+fi
 					ct+=1
 					mt = f.sendcmd('MDTM '+ fi)
 					#converting to timestamp
 					nt = datetime.strptime(mt[4:], "%Y%m%d%H%M%S").strftime("%s")
 					DownloadAndSetTimestamp(local_file,fi,nt)
-					print "################"
-		else:
-			print "Files not found in "+ target_dir +"! Skipping..." 
-
+		except ftplib.error_temp,  resp:
+			if str(resp) == "450 No files found":
+				print "No "+ file_type +" files in this directory. Skipping"
 		f.cwd('..')
 f.quit()
 print "# of "+target_bug+" new files found and downloaded: " + str(ct)
